@@ -2,6 +2,7 @@
 
   <include package=".alphabetic" />
   <include package=".checkbox" />
+  <include package=".animalescheckbox" />
   <include package=".criteria" />
   <include package=".date" />
   <include package=".daterange" />
