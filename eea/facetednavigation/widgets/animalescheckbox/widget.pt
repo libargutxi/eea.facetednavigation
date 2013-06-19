@@ -38,7 +38,7 @@
           title term_label;
           value term_id;" />
         <label tal:attributes="for chbox_id; title term_label">
-          <img tal:attributes="src string:/${wbr_term_label}.gif;alt string:${wbr_term_label};title string:${wbr_term_label}"/>
+          <img tal:attributes="src string:/${term_id}.png;alt string:${wbr_term_label};title string:${wbr_term_label}"/>
         </label>
       </li>
     </tal:items>
