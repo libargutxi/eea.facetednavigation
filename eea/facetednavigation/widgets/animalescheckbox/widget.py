@@ -1,6 +1,5 @@
 """ Checkbox widget
 """
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from Products.Archetypes.public import Schema
 from Products.Archetypes.public import IntegerField
 from Products.Archetypes.public import LinesField
@@ -12,6 +11,7 @@ from Products.Archetypes.public import SelectionWidget
 from Products.Archetypes.public import BooleanWidget
 from Products.Archetypes.utils import DisplayList
 
+from eea.facetednavigation.widgets import ViewPageTemplateFile
 from eea.faceted.vocabularies.utils import compare
 from eea.facetednavigation.widgets.widget import CountableWidget
 from eea.facetednavigation import EEAMessageFactory as _
@@ -35,9 +35,19 @@ EditSchema = Schema((
         default='or',
         widget=SelectionWidget(
             format='select',
-            label=_(u'Operator'),
+            label=_(u'Default operator'),
             description=_(u'Search with AND/OR between elements'),
             i18n_domain="eea"
+        )
+    ),
+    BooleanField('operator_visible',
+        schemata='default',
+        required=False,
+        default=False,
+        widget=BooleanWidget(
+            label=_(u"Operator visible"),
+            description=_(u"Let the end-user choose to search with "
+                          "AND or OR between elements"),
         )
     ),
     StringField('vocabulary',
@@ -119,6 +129,18 @@ class Widget(CountableWidget):
                 return True
         return False
 
+    @property
+    def operator_visible(self):
+        """ Is operator visible for anonymous users
+        """
+        return self.data.get('operator_visible', False)
+
+    @property
+    def operator(self):
+        """ Get the default query operator
+        """
+        return self.data.get('operator', 'and')
+
     def query(self, form):
         """ Get value from form and return a catalog dict query
         """
@@ -126,8 +148,11 @@ class Widget(CountableWidget):
         index = self.data.get('index', '')
         index = index.encode('utf-8', 'replace')
 
-        # Use 'and' by default in order to be backward compatible
-        operator = self.data.get('operator', 'and')
+        if not self.operator_visible:
+            operator = self.operator
+        else:
+            operator = form.get(self.data.getId() + '-operator', self.operator)
+
         operator = operator.encode('utf-8', 'replace')
 
         if not index:
@@ -143,4 +168,3 @@ class Widget(CountableWidget):
 
         query[index] = {'query': value, 'operator': operator}
         return query
-
