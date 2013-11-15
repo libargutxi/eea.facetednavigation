@@ -10,17 +10,20 @@
   css python:hidden and css + ' faceted-widget-hidden' or css;
   css python:view.countable and css + ' faceted-count' or css;
   css python:sortcountable and css + ' faceted-sortcountable' or css;
-  css python:hidezerocount and css + ' faceted-zero-count-hidden' or css;"
-  tal:attributes="id string:${wid}_widget; class css">
+  css python:hidezerocount and css + ' faceted-zero-count-hidden' or css;
+  vocabulary python:view.vocabulary()"
+  tal:attributes="id string:${wid}_widget; class css"
+  tal:condition="vocabulary">
 
-<fieldset class="widget-fieldset">
-<legend tal:define="title python:view.data.get('title', '')" tal:content="
+<fieldset class="widget-fieldset"
+  tal:define="title python:view.data.get('title', '')">
+<legend tal:content="
   python:view.translate(title)" i18n:translate="">Current Search</legend>
 <form action="." method="get"
   tal:on-error="structure python:error_view(error=error, cid=wid)">
-
-<tal:select define="vocabulary python:view.vocabulary()"
-  condition="vocabulary">
+  <label class="select-field"
+    tal:attributes="for wid"
+    tal:content="python:view.translate(title)" />
   <select tal:attributes="name wid; id wid" class="faceted_select">
     <option title="All" value=""
       i18n:attributes="title" i18n:translate="">All</option>
@@ -38,7 +41,6 @@
         tal:content="term_label" />
     </tal:option>
   </select>
-</tal:select>
 
 </form>
 </fieldset>

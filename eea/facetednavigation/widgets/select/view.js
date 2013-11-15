@@ -125,6 +125,7 @@ Faceted.SelectWidget.prototype = {
     });
 
     var html = jQuery('<dt>');
+    html.attr('id', 'criteria_' + this.wid + '_label');
     html.append(link);
     html.append('<span>' + this.title + '</span>');
     return html;
@@ -137,6 +138,8 @@ Faceted.SelectWidget.prototype = {
 
     var widget = this;
     var html = jQuery('<dd>');
+    var span = jQuery('<span class="facted-select-criterion">');
+    html.attr('id', 'criteria_' + this.wid + '_entries');
     var element = jQuery(this.selected);
     var value = element.val();
     var label = element.attr('title');
@@ -148,8 +151,9 @@ Faceted.SelectWidget.prototype = {
       widget.criteria_remove();
       return false;
     });
-    html.append(link);
-    html.append('<span>' + label + '</span>');
+    span.append(link);
+    span.append('<span>' + label + '</span>');
+    html.append(span);
 
     return html;
   },

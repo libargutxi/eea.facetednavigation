@@ -26,35 +26,45 @@ class FacetedExportImport(object):
             IStatusMessage(self.request).addStatusMessage(str(msg), type='info')
         self.request.response.redirect(to)
 
-    def import_xml(self, **kwargs):
-        """ Import config from xml
+    def _import_xml(self, **kwargs):
+        """ Import
         """
         upload_file = kwargs.get('import_file', None)
         if getattr(upload_file, 'read', None):
             upload_file = upload_file.read()
         xml = upload_file or ''
         if not xml.startswith('<?xml version="1.0"'):
-            return self._redirect('Please provide a valid xml file',
-                kwargs.get('redirect', 'configure_faceted.html'))
+            return _('Please provide a valid xml file')
 
         environ = SnapshotImportContext(self.context, 'utf-8')
         importer = queryMultiAdapter((self.context, environ), IBody)
         if not importer:
-            return self._redirect('No adapter found',
-                kwargs.get('redirect', 'configure_faceted.html'))
+            return 'No adapter found'
 
         importer.body = xml
-        return self._redirect(_(u"Configuration imported"),
+        return _(u"Configuration imported")
+
+    def import_xml(self, **kwargs):
+        """ Import config from xml
+        """
+        msg = self._import_xml(**kwargs)
+        return self._redirect(msg,
                               kwargs.get('redirect', 'configure_faceted.html'))
+
+    def _export_xml(self, **kwargs):
+        """ Export
+        """
+        environ = SnapshotExportContext(self.context, 'utf-8')
+        return queryMultiAdapter((self.context, environ), IBody)
 
     def export_xml(self, **kwargs):
         """ Export config as xml
         """
-        environ = SnapshotExportContext(self.context, 'utf-8')
-        exporter = queryMultiAdapter((self.context, environ), IBody)
+        exporter = self._export_xml(**kwargs)
         if not exporter:
             return self._redirect('No adapter found',
                 kwargs.get('redirect', 'configure_faceted.html'))
+
         self.request.response.setHeader(
             'content-type', 'text/xml; charset=utf-8')
         self.request.response.addHeader(

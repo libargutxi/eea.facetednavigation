@@ -52,7 +52,7 @@ Faceted.DateRangeWidget = function(wid){
     js_widget.reset();
   });
 };
-
+Faceted.DateRangeErrorMsg = 'Invalid date range';
 Faceted.DateRangeWidget.prototype = {
   select_change: function(element){
     this.do_query(element);
@@ -71,8 +71,8 @@ Faceted.DateRangeWidget.prototype = {
     var end_date = new Date(end.replace(/-/g, '/'));
 
     if(end_date<start_date){
-      var msg = 'Invalid date range';
-      Faceted.Form.raise_error(msg, this.wid + '_errors', []);
+      Faceted.Form.raise_error(Faceted.DateRangeErrorMsg,
+                               this.wid + '_errors', []);
     }else{
       this.selected = [this.start, this.end];
       Faceted.Form.clear_errors(this.wid + '_errors', []);
@@ -150,6 +150,7 @@ Faceted.DateRangeWidget.prototype = {
     });
 
     var html = jQuery('<dt>');
+    html.attr('id', 'criteria_' + this.wid + '_label');
     html.append(link);
     html.append('<span>' + this.title + '</span>');
     return html;
@@ -162,12 +163,13 @@ Faceted.DateRangeWidget.prototype = {
 
     var widget = this;
     var html = jQuery('<dd>');
+    html.attr('id', 'criteria_' + this.wid + '_entries');
     var start = this.start.val();
     var end = this.end.val();
     var start_date = new Date(start.replace(/-/g, '/'));
     var end_date = new Date(end.replace(/-/g, '/'));
 
-    var label = start_date.toDateString() + ' - ' + end_date.toDateString();
+    var label = this.criteria_label(start_date, end_date);
     var link = jQuery('<a href="#">[X]</a>');
 
     link.attr('id', 'criteria_' + this.wid + '_');
@@ -176,10 +178,15 @@ Faceted.DateRangeWidget.prototype = {
       widget.criteria_remove();
       return false;
     });
-    html.append(link);
-    html.append('<span>' + label + '</span>');
-
+    var span = jQuery('<span class="faceted-daterange-criterion">');
+    span.append(link);
+    span.append('<span>' + label + '</span>');
+    html.append(span);
     return html;
+  },
+
+  criteria_label: function(start_date, end_date){
+    return start_date.toDateString() + ' - ' + end_date.toDateString();
   },
 
   criteria_remove: function(){

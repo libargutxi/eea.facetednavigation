@@ -8,11 +8,15 @@
   css python:hidden and css + ' faceted-widget-hidden' or css;"
   tal:attributes="id string:${wid}_widget; class css">
 
-<fieldset class="widget-fieldset">
-  <legend tal:define="title python:view.data.get('title', '')" tal:content="
+<fieldset class="widget-fieldset"
+  tal:define="title python:view.data.get('title', '')">
+  <legend tal:content="
     python:view.translate(title)" i18n:translate="">Text Widget</legend>
   <form action="." method="get"
     tal:on-error="structure python:error_view(error=error, cid=wid)">
+  <label class="text-field"
+    tal:attributes="for wid"
+    tal:content="python:view.translate(title)" />
   <input type="text" tal:attributes="
     name string:${wid};
     id string:${wid};
@@ -22,7 +26,8 @@
     name string:${wid}_button;
     id string:${wid}_button;"
     i18n:attributes="value" />
-  <div class="faceted-textwidget-place-all">
+  <div class="faceted-textwidget-place-all"
+       tal:condition="not:view/data/onlyallelements|nothing">
   <input type="radio" checked="checked" tal:attributes="
     name string:${wid}_place;
     id string:${wid}_place_all;
@@ -30,7 +35,8 @@
   <label tal:attributes="for string:${wid}_place_all"
     i18n:translate="">all items</label>
   </div>
-  <div class="faceted-textwidget-place-current">
+  <div class="faceted-textwidget-place-current"
+       tal:condition="not:view/data/onlyallelements|nothing">
   <input type="radio" tal:attributes="
     name string:${wid}_place;
     id string:${wid}_place_current;

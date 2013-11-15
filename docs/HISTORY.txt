@@ -1,8 +1,100 @@
 Changelog
 =========
 
-5.5-dev - (unreleased)
+6.5-dev - (unreleased)
 ----------------------
+* Bug fix: fix url handling in settings menu [kiorky]
+
+6.4 - (2013-10-25)
+------------------
+* Bug fix: Added 'Current filters' to plone-manual.pot and updated po files.
+  [prospchr]
+
+6.3 - (2013-10-04)
+------------------
+* Bug fix: Add sensical da translations
+  [tmog]
+
+6.2 - (2013-09-23)
+------------------
+* Feature: Option to disable inheriting the configuration from the canoical
+  language (only displayed when the object is not canonical).
+  [pbauer]
+
+6.1 - (2013-09-13)
+------------------
+* Bug fix: Allow using keywords with spaces in a radio-widget.
+  [pbauer]
+* Bug fix: Fixed adding path facet on faceted navigable objects that are default
+  views for their parents
+  [avoinea refs #33 github]
+* Feature: Slovak translation updates
+  [rlacko]
+
+6.0 - (2013-09-06)
+------------------
+* Feature: Possibility to make AND/OR operator within checkbox facet visible
+  for anonymous users
+  [voineali refs #16624]
+
+5.9 - (2013-08-09)
+------------------
+* Date range error message is delegated so it can be overriden.
+  [thomasdesvenain]
+* Updating feeds to use the syndication available in Plone 4.3
+  [hman]
+
+5.8 - (2013-07-08)
+------------------
+* If dexterity is installed, added a behavior that allows to enable faceted
+  navigation on all instances of a dexterity portal type.
+  [thomasdesvenain]
+* We have an option to hide "All" option from radio widget.
+  [thomasdesvenain]
+* Bug fix: If we have selected "search only in all elements" for text widget,
+  behavior is the one expected.
+  [thomasdesvenain]
+* Bug fix: Fix ui-icon-hide and ui-icon-show in configure_faceted.html view
+  in Plone 4.3.1.
+  [cedricmessiant]
+
+5.7 - (2013-06-17)
+------------------
+* Bug fix: Fix JS typo within DateRange widget
+  [voineali refs #14677]
+* Criteria entries are each in a span container.
+  [thomasdesvenain]
+
+5.6 - (2013-05-20)
+------------------
+* Add ids to criteria filtering entries.
+  [thomasdesvenain]
+* Fix: Iterate on batch instead of folderContents in preview-items.pt
+  It previously loaded all objects instead of the only first 100 when no
+  criterion was given.
+  [vincentfretin]
+* Feature: Removed lovely.memcached dependency
+  [voineali refs #14343]
+* Change: Added id to <li> in checkbox widget.
+  [cedricmessiant]
+* Change: changed links for open and closed issues for facetednavigation to
+  point to taskman
+  [ichim-david]
+* Fix: Prevent whole select form from appearing if vocal is empty
+  [davismr]
+* Fix: Add labels for select and text field, fixes issues 29 and 30
+  [davismr]
+* Fix: text widget input immediately gets value set in the url as input value.
+  [thomasdesvenain]
+* Add an option to hide all/current alternative on text search widget.
+  [thomasdesvenain]
+
+5.5 - (2013-02-25)
+------------------
+* Feature: added information for contributors
+  [ciobabog refs #13892]
+* Change: Plone 4.3 compatible
+  [lewicki]
 
 5.4 - (2013-02-04)
 ------------------
@@ -79,7 +171,7 @@ Changelog
   on faceted preview item view.
   [thomasdesvenain]
 * Feature: Added a Faceted.Options object in view.js
-  so that some behaviours can be customized
+  so that some behaviors can be customized
   [thomasdesvenain]
 
 4.8 - (2012-07-17)

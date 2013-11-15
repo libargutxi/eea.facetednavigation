@@ -1,18 +1,18 @@
 """ Faceted settings
 """
 from zope.interface import implements, alsoProvides, noLongerProvides
-from zope.app.publisher.browser.menu import BrowserSubMenuItem
-from zope.app.publisher.browser.menu import BrowserMenu
 from zope.security import checkPermission
-
 from Products.Five.browser import BrowserView
 from Products.statusmessages.interfaces import IStatusMessage
 
+from eea.facetednavigation.settings import BrowserMenu
+from eea.facetednavigation.settings import BrowserSubMenuItem
 from eea.facetednavigation.interfaces import IFacetedNavigable
 from eea.facetednavigation.settings.interfaces import ISettingsHandler
 from eea.facetednavigation.settings.interfaces import IHidePloneLeftColumn
 from eea.facetednavigation.settings.interfaces import IHidePloneRightColumn
 from eea.facetednavigation.settings.interfaces import IDisableSmartFacets
+from eea.facetednavigation.settings.interfaces import IDontInheritConfiguration
 from eea.facetednavigation import EEAMessageFactory as _
 
 class SettingsMenu(BrowserSubMenuItem):
@@ -49,7 +49,9 @@ class SettingsMenuItems(BrowserMenu):
         """ Return menu items
         """
         url = context.absolute_url()
-        action = url + '/@@faceted_settings/%s'
+        # use format to avoid messing with url with "%" in them like
+        # 'http://foo/stones-1/foo%20bar%20moo/@@faceted_settings/%s'
+        action = url + '/@@faceted_settings/{0}'
 
         left_hidden = IHidePloneLeftColumn.providedBy(context)
         right_hidden = IHidePloneRightColumn.providedBy(context)
@@ -60,7 +62,7 @@ class SettingsMenuItems(BrowserMenu):
                 'title': (_('Enable left portlets') if left_hidden
                      else _('Disable left portlets')),
                 'description': '',
-                'action': action % 'toggle_left_column',
+                'action': action.format('toggle_left_column'),
                 'selected': not left_hidden,
                 'icon': ('++resource++faceted_images/show.png' if left_hidden
                     else '++resource++faceted_images/hide.png'),
@@ -75,7 +77,7 @@ class SettingsMenuItems(BrowserMenu):
                 'title': (_('Enable right portlets') if right_hidden
                      else _('Disable right portlets')),
                 'description': '',
-                'action': action % 'toggle_right_column',
+                'action': action.format('toggle_right_column'),
                 'selected': not right_hidden,
                 'icon': ('++resource++faceted_images/show.png' if right_hidden
                     else '++resource++faceted_images/hide.png'),
@@ -90,7 +92,7 @@ class SettingsMenuItems(BrowserMenu):
                 'title': (_('Enable smart facets hiding') if smart_hidden
                      else _('Disable smart facets hiding')),
                 'description': '',
-                'action': action % 'toggle_smart_facets',
+                'action': action.format('toggle_smart_facets'),
                 'selected': not smart_hidden,
                 'icon': ('++resource++faceted_images/show.png' if smart_hidden
                     else '++resource++faceted_images/hide.png'),
@@ -102,6 +104,24 @@ class SettingsMenuItems(BrowserMenu):
                 'submenu': None,
             },
         ]
+        iscanonical = getattr(context, 'isCanonical', None)
+        if callable(iscanonical) and not iscanonical():
+            inherit_config = not IDontInheritConfiguration.providedBy(context)
+            menu.append({
+                'title': (_('Disable inheriting configuration')
+                          if inherit_config
+                          else _('Enable inheriting configuration ')),
+                'description': '',
+                'action': action % 'toggle_inherit_config',
+                'selected': not inherit_config,
+                'icon': None,
+                'extra': {
+                    'id': 'toggle_inherit_config',
+                    'separator': None,
+                    'class': ''
+                    },
+                'submenu': None,
+            })
 
         return menu
 
@@ -150,3 +170,15 @@ class SettingsHandler(BrowserView):
         else:
             alsoProvides(self.context, IDisableSmartFacets)
             return self._redirect(_('Smart facets hiding is now disabled'))
+
+    def toggle_inherit_config(self, **kwargs):
+        """ Enable/Disable 'inheriting configuration'
+        """
+        if IDontInheritConfiguration.providedBy(self.context):
+            noLongerProvides(self.context, IDontInheritConfiguration)
+            return self._redirect(
+                _('Inheriting configuration if is now enabled'))
+        else:
+            alsoProvides(self.context, IDontInheritConfiguration)
+            return self._redirect(
+                _('Inheriting configuration is now disabled'))

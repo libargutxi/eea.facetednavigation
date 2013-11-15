@@ -128,6 +128,7 @@ Faceted.AlphabeticalWidget.prototype = {
     });
 
     var html = jQuery('<dt>');
+    html.attr('id', 'criteria_' + this.wid + '_label');
     html.append(link);
     html.append('<span>' + this.title + '</span>');
     return html;
@@ -149,8 +150,11 @@ Faceted.AlphabeticalWidget.prototype = {
     });
 
     var html = jQuery('<dd>');
-    html.append(link);
-    html.append('<span>' + label + '</span>');
+    html.attr('id', 'criteria_' + this.wid + '_entries');
+    var span = jQuery('<span class="faceted-alphabetic-criterion">');
+    span.append(link);
+    span.append('<span>' + label + '</span>');
+    html.append(span);
     return html;
   },
 

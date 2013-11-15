@@ -23,14 +23,8 @@ addons:
   * Multilingual/translation solution
       - Products.LinguaPlone
 
-  * Syndication
-      - Products.basesyndication
-      - Products.fatsyndication
-      - bda.feed
-
   * Cache (memcache)
       - plone.memoize
-      - lovely.memcached
       - eea.cache
 
   * Faceted extensions
